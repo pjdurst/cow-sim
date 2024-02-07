@@ -1,0 +1,9 @@
+{
+    "field-size": 100,
+    "grass-height": 5,
+    "growth-rate": 1,
+    "number-cows": 5,
+    "search-nodes": 1,
+    "eat-rate": 1,
+    "sim-time": 4
+}
