@@ -1,0 +1,70 @@
+[gd_scene load_steps=7 format=3 uid="uid://cl2vmx6ixlm3h"]
+
+[ext_resource type="PackedScene" uid="uid://b2nvqaoy6hlit" path="res://scenes/cow.tscn" id="1_3hlo2"]
+[ext_resource type="Script" path="res://scenes/grass_field.gd" id="1_yv28s"]
+[ext_resource type="PackedScene" uid="uid://bip6eg2ianqk1" path="res://scenes/grass.tscn" id="2_ggbjy"]
+[ext_resource type="Script" path="res://scripts/grass.gd" id="4_byruh"]
+
+[sub_resource type="GDScript" id="GDScript_masb1"]
+script/source = "extends Area2D
+
+var pos = Vector2(300,300)
+var amount: int = 5
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	print('hi, i am grass!')
+	position = pos
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(_delta):
+	if amount < 5:
+		amount += 1
+		print('i am regrowing')
+"
+
+[sub_resource type="GDScript" id="GDScript_66fqh"]
+script/source = "extends CharacterBody2D
+ 
+var speed = 10
+var pos = Vector2.ZERO
+var direction = Vector2(0.45, 0.45)
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	print('hi, i am hungry cow!')
+	position = pos
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(_delta):
+	
+	# traditional player movement
+	#var direction = Input.get_vector(\"left\", \"right\", \"up\", \"down\")
+	# velocity = direction * speed
+	#move_and_slide()
+	
+	# cow searches for grass
+	pos += direction * speed
+	position = pos
+"
+
+[node name="grass-field" type="Node2D"]
+script = ExtResource("1_yv28s")
+
+[node name="grass01" parent="." instance=ExtResource("2_ggbjy")]
+position = Vector2(548, 145)
+script = ExtResource("4_byruh")
+
+[node name="grass02" parent="." instance=ExtResource("2_ggbjy")]
+script = SubResource("GDScript_masb1")
+
+[node name="grass03" parent="." instance=ExtResource("2_ggbjy")]
+script = SubResource("GDScript_masb1")
+
+[node name="cow" parent="." instance=ExtResource("1_3hlo2")]
+position = Vector2(241, 127)
+script = SubResource("GDScript_66fqh")
+
+[connection signal="body_entered" from="grass01" to="." method="_on_grass_body_entered"]
+[connection signal="body_entered" from="grass02" to="." method="_on_grass_02_body_entered"]
+[connection signal="body_entered" from="grass03" to="." method="_on_grass_03_body_entered"]
