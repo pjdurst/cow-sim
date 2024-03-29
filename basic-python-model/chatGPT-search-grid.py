@@ -40,14 +40,14 @@ grid = [
 
 print(find_max_location(grid))  # Output: (2, 2)
 
-    # Calculate the cow's new grid location
-    deltaX = 0
-    deltaY = 0
-    if row_idx == 0:
-        deltaY = 1
-    if row_idx == 2:
-        deltaY = -1
-    if col_idx == 0:
-        deltaX = -1            
-    if col_idx == 2:
-        deltaX = 1
+# Calculate the cow's new grid location
+deltaX = 0
+deltaY = 0
+if row_idx == 0:
+    deltaY = 1
+if row_idx == 2:
+    deltaY = -1
+if col_idx == 0:
+    deltaX = -1            
+if col_idx == 2:
+    deltaX = 1
