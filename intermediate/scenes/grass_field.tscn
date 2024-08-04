@@ -43,9 +43,12 @@ func _process(_delta):
 	# velocity = direction * speed
 	#move_and_slide()
 	
-	# cow searches for grass
+	# cow wanders across the field
 	pos += direction * speed
 	position = pos
+	
+	# cow actively searches for grass
+	
 "
 
 [node name="grass-field" type="Node2D"]

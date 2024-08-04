@@ -1,0 +1,15 @@
+ea4bc82a6ad023ab7ee23ee620429895
+::res://::1722724394
+icon.svg::CompressedTexture2D::125512459807801292::1722458946::1722723305::1::::<><>::
+::res://assets/::1722723305
+cow-sprite.jpeg::CompressedTexture2D::5117134036231305219::1722458946::1722723305::1::::<><>::
+grass-sprite.png::CompressedTexture2D::4779935009657513832::1722458946::1722723305::1::::<><>::
+::res://scenes/::1722723876
+cow.tscn::PackedScene::4309660025032753143::1722458946::0::1::::<><>::uid://ce51pke83437l::::res://assets/cow-sprite.jpeg
+grass.tscn::PackedScene::2980786826273470038::1722458946::0::1::::<><>::uid://cado3i6ryvxpg::::res://assets/grass-sprite.png
+grass_field.gd::GDScript::-1::1722458946::0::1::::<>Node2D<>::
+grass_field.tscn::PackedScene::5601954589459783287::1722723876::0::1::::<><>::uid://b2nvqaoy6hlit::::res://scenes/cow.tscn<>res://scenes/grass_field.gd<>uid://bip6eg2ianqk1::::res://scenes/grass.tscn<>res://scripts/grass.gd
+::res://scripts/::1722458946
+cow.gd::GDScript::-1::1722458946::0::1::::<>CharacterBody2D<>::
+grass.gd::GDScript::-1::1722458946::0::1::::<>Area2D<>::
+grass_field.gd::GDScript::-1::1722458946::0::1::::<>CharacterBody2D<>::
