@@ -1,0 +1,97 @@
+[gd_scene format=3 uid="uid://cl2vmx6ixlm3h"]
+
+[ext_resource type="PackedScene" uid="uid://b2nvqaoy6hlit" path="res://scenes/cow.tscn" id="1_3hlo2"]
+[ext_resource type="Script" uid="uid://brue6wqblfp7d" path="res://scenes/grass_field.gd" id="1_yv28s"]
+[ext_resource type="PackedScene" uid="uid://bip6eg2ianqk1" path="res://scenes/grass.tscn" id="2_ggbjy"]
+[ext_resource type="Script" uid="uid://uveccfanhgyc" path="res://scripts/grass.gd" id="4_byruh"]
+[ext_resource type="Script" uid="uid://dhu5df8pxqg64" path="res://cow.gd" id="5_6hef4"]
+
+[sub_resource type="GDScript" id="GDScript_masb1"]
+script/source = "extends Area2D
+
+var pos = Vector2(50, 50)
+var amount: int = 5
+var max_amount: int = 5
+var is_fully_grown = true
+var grow_timer = 0.0
+var grow_rate = 1.0  # Seconds per grass unit to regrow
+
+func _ready():
+	print('hi, i am grass!')
+	position = pos
+	add_to_group(\"Grass\")
+
+func _process(delta):
+	if amount < max_amount:
+		# Grass is regrowing
+		grow_timer += delta
+		
+		if grow_timer >= grow_rate:
+			amount += 1
+			grow_timer = 0.0
+			print('i am regrowing, amount: ', amount)
+			
+			# Visual feedback - scale based on growth
+			var growth_progress = float(amount) / float(max_amount)
+			scale = Vector2(growth_progress, growth_progress)
+			modulate.a = 0.3 + (growth_progress * 0.7)
+			
+			if amount >= max_amount:
+				is_fully_grown = true
+				scale = Vector2(1.0, 1.0)
+				modulate.a = 1.0
+				print('grass fully regrown!')
+
+func eat_grass():
+	# Called when cow finishes eating
+	amount = 0
+	is_fully_grown = false
+	grow_timer = 0.0
+	scale = Vector2(0.2, 0.2)
+	modulate.a = 0.3
+	print('grass was eaten!')
+
+func is_grown():
+	return is_fully_grown and amount >= max_amount
+"
+
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_32qfs"]
+vertices = PackedVector2Array(1077.9375, 373.04688, -100.88281, 378.9375, -95.10156, -143.0625, 1075.0469, -150.92969)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(-105, -153, -111, 389, 1088, 383, 1085, -161)])
+
+[node name="grass-field" type="Node2D" unique_id=1616034112]
+script = ExtResource("1_yv28s")
+
+[node name="grass01" parent="." unique_id=1326396000 groups=["Grass"] instance=ExtResource("2_ggbjy")]
+position = Vector2(50, 50)
+scale = Vector2(0.5, 0.5)
+script = ExtResource("4_byruh")
+
+[node name="grass02" parent="." unique_id=1317832992 groups=["Grass"] instance=ExtResource("2_ggbjy")]
+position = Vector2(250, 250)
+scale = Vector2(0.5, 0.5)
+script = SubResource("GDScript_masb1")
+
+[node name="grass03" parent="." unique_id=1182088127 groups=["Grass"] instance=ExtResource("2_ggbjy")]
+position = Vector2(350, 100)
+scale = Vector2(0.5, 0.5)
+script = SubResource("GDScript_masb1")
+
+[node name="cow" parent="." unique_id=881173515 instance=ExtResource("1_3hlo2")]
+position = Vector2(500, 75)
+scale = Vector2(0.75, 0.75)
+script = ExtResource("5_6hef4")
+
+[node name="cow2" parent="." unique_id=657948607 instance=ExtResource("1_3hlo2")]
+position = Vector2(75, 200)
+scale = Vector2(0.75, 0.75)
+script = ExtResource("5_6hef4")
+
+[node name="NavigationRegion2D" type="NavigationRegion2D" parent="." unique_id=890025551]
+position = Vector2(0, 4)
+scale = Vector2(0.75, 0.75)
+navigation_polygon = SubResource("NavigationPolygon_32qfs")
+
+[connection signal="body_entered" from="grass02" to="." method="_on_grass_02_body_entered"]
+[connection signal="body_entered" from="grass03" to="." method="_on_grass_03_body_entered"]

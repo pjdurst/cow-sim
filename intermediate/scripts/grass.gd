@@ -1,15 +1,44 @@
 extends Area2D
 
-var pos = Vector2(50,50)
 var amount: int = 5
+var max_amount: int = 5
+var is_fully_grown = true
+var grow_timer = 0.0
+var grow_rate = 1.0
 
-# Called when the node enters the scene tree for the first time.
 func _ready():
 	print('hi, i am grass!')
-	position = pos
+	add_to_group("Grass")
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta):
-	if amount < 5:
-		amount += 1
-		print('i am regrowing')
+func _process(delta):
+	if amount < max_amount:
+		# Grass is regrowing
+		grow_timer += delta
+		
+		if grow_timer >= grow_rate:
+			amount += 1
+			grow_timer = 0.0
+			print('i am regrowing, amount: ', amount)
+			
+			# Visual feedback - scale based on growth
+			var growth_progress = float(amount) / float(max_amount)
+			scale = Vector2(growth_progress, growth_progress)
+			modulate.a = 0.3 + (growth_progress * 0.7)
+			
+			if amount >= max_amount:
+				is_fully_grown = true
+				scale = Vector2(1.0, 1.0)
+				modulate.a = 1.0
+				print('grass fully regrown!')
+
+func eat_grass():
+	# Called when cow finishes eating
+	amount = 0
+	is_fully_grown = false
+	grow_timer = 0.0
+	scale = Vector2(0.2, 0.2)
+	modulate.a = 0.3
+	print('grass was eaten!')
+
+func is_grown():
+	return is_fully_grown and amount >= max_amount

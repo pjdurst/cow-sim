@@ -1,0 +1,147 @@
+[gd_scene format=3 uid="uid://cl2vmx6ixlm3h"]
+
+[ext_resource type="PackedScene" uid="uid://b2nvqaoy6hlit" path="res://scenes/cow.tscn" id="1_3hlo2"]
+[ext_resource type="Script" uid="uid://brue6wqblfp7d" path="res://scenes/grass_field.gd" id="1_yv28s"]
+[ext_resource type="PackedScene" uid="uid://bip6eg2ianqk1" path="res://scenes/grass.tscn" id="2_ggbjy"]
+[ext_resource type="Script" uid="uid://uveccfanhgyc" path="res://scripts/grass.gd" id="4_byruh"]
+
+[sub_resource type="GDScript" id="GDScript_masb1"]
+script/source = "extends Area2D
+
+var pos = Vector2(300,300)
+var amount: int = 5
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	print('hi, i am grass!')
+	position = pos
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(_delta):
+	if amount < 5:
+		amount += 1
+		print('i am regrowing')
+"
+
+[sub_resource type="GDScript" id="GDScript_66fqh"]
+script/source = "extends CharacterBody2D
+
+var pos = Vector2.ZERO
+var speed = 50.0
+var grass_target = null
+var is_eating = false
+var eat_timer = 0.0
+var eat_duration = 2.0  # How long it takes to eat grass
+
+@onready var navigation_agent = NavigationAgent2D.new()
+
+func _ready():
+	print('hi, i am hungry cow!')
+	position = pos
+	
+	# Set up NavigationAgent2D
+	add_child(navigation_agent)
+	navigation_agent.path_desired_distance = 4.0
+	navigation_agent.target_desired_distance = 10.0  # How close to get before \"eating\"
+	
+	# Wait for navigation to be ready
+	await get_tree().physics_frame
+	
+	# Start searching for grass
+	find_nearest_grass()
+
+func _process(delta):
+	if is_eating:
+		# Currently eating grass
+		eat_timer += delta
+		if eat_timer >= eat_duration:
+			# Finished eating
+			finish_eating()
+		return
+	
+	if navigation_agent.is_navigation_finished():
+		# Reached the grass target
+		if grass_target and is_instance_valid(grass_target):
+			start_eating()
+		else:
+			# Target disappeared, find new grass
+			find_nearest_grass()
+		return
+	
+	# Get next position in path
+	var next_position = navigation_agent.get_next_path_position()
+	var direction = (next_position - global_position).normalized()
+	
+	# Move cow
+	velocity = direction * speed
+	move_and_slide()
+
+func find_nearest_grass():
+	# Find all grass nodes
+	var grass_nodes = get_tree().get_nodes_in_group(\"Grass\")
+	
+	if grass_nodes.is_empty():
+		print(\"No grass left!\")
+		return
+	
+	# Find closest grass
+	var nearest_grass = null
+	var min_distance = INF
+	
+	for grass in grass_nodes:
+		var distance = global_position.distance_to(grass.global_position)
+		if distance < min_distance:
+			min_distance = distance
+			nearest_grass = grass
+	
+	if nearest_grass:
+		navigation_agent.target_position = nearest_grass.global_position
+		grass_target = nearest_grass
+
+func start_eating():
+	is_eating = true
+	eat_timer = 0.0
+	print(\"Nom nom nom... eating grass!\")
+	# Optional: play eating animation here
+
+func finish_eating():
+	# Remove the grass
+	if grass_target and is_instance_valid(grass_target):
+		grass_target.queue_free()
+	
+	grass_target = null
+	is_eating = false
+	print(\"Finished eating! Looking for more grass...\")
+	
+	# Search for next grass
+	find_nearest_grass()
+"
+
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_32qfs"]
+vertices = PackedVector2Array(1077.9375, 373.04688, -100.88281, 378.9375, -95.10156, -143.0625, 1075.0469, -150.92969)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(-105, -153, -111, 389, 1088, 383, 1085, -161)])
+
+[node name="grass-field" type="Node2D" unique_id=1616034112]
+script = ExtResource("1_yv28s")
+
+[node name="grass01" parent="." unique_id=1326396000 groups=["Grass"] instance=ExtResource("2_ggbjy")]
+position = Vector2(548, 145)
+script = ExtResource("4_byruh")
+
+[node name="grass02" parent="." unique_id=1317832992 groups=["Grass"] instance=ExtResource("2_ggbjy")]
+script = SubResource("GDScript_masb1")
+
+[node name="grass03" parent="." unique_id=1182088127 groups=["Grass"] instance=ExtResource("2_ggbjy")]
+script = SubResource("GDScript_masb1")
+
+[node name="cow" parent="." unique_id=881173515 instance=ExtResource("1_3hlo2")]
+position = Vector2(241, 127)
+script = SubResource("GDScript_66fqh")
+
+[node name="NavigationRegion2D" type="NavigationRegion2D" parent="." unique_id=890025551]
+navigation_polygon = SubResource("NavigationPolygon_32qfs")
+
+[connection signal="body_entered" from="grass01" to="." method="_on_grass_body_entered"]
+[connection signal="body_entered" from="grass02" to="." method="_on_grass_02_body_entered"]
+[connection signal="body_entered" from="grass03" to="." method="_on_grass_03_body_entered"]

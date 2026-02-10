@@ -1,73 +1,45 @@
-[gd_scene load_steps=7 format=3 uid="uid://cl2vmx6ixlm3h"]
+[gd_scene format=3 uid="uid://cl2vmx6ixlm3h"]
 
 [ext_resource type="PackedScene" uid="uid://b2nvqaoy6hlit" path="res://scenes/cow.tscn" id="1_3hlo2"]
-[ext_resource type="Script" path="res://scenes/grass_field.gd" id="1_yv28s"]
+[ext_resource type="Script" uid="uid://by8fpjnka7q05" path="res://grass_field.gd" id="1_6hef4"]
 [ext_resource type="PackedScene" uid="uid://bip6eg2ianqk1" path="res://scenes/grass.tscn" id="2_ggbjy"]
-[ext_resource type="Script" path="res://scripts/grass.gd" id="4_byruh"]
+[ext_resource type="Script" uid="uid://dhu5df8pxqg64" path="res://cow.gd" id="5_6hef4"]
+[ext_resource type="Script" uid="uid://c2lrq3jtxbgg5" path="res://grass.gd" id="5_ftust"]
 
-[sub_resource type="GDScript" id="GDScript_masb1"]
-script/source = "extends Area2D
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_32qfs"]
+vertices = PackedVector2Array(1077.9375, 373.04688, -100.88281, 378.9375, -95.10156, -143.0625, 1075.0469, -150.92969)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(-105, -153, -111, 389, 1088, 383, 1085, -161)])
 
-var pos = Vector2(300,300)
-var amount: int = 5
+[node name="grass-field" type="Node2D" unique_id=1616034112]
+script = ExtResource("1_6hef4")
 
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	print('hi, i am grass!')
-	position = pos
+[node name="cow" parent="." unique_id=881173515 groups=["Cow"] instance=ExtResource("1_3hlo2")]
+position = Vector2(650, 75)
+scale = Vector2(0.75, 0.75)
+script = ExtResource("5_6hef4")
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta):
-	if amount < 5:
-		amount += 1
-		print('i am regrowing')
-"
+[node name="cow2" parent="." unique_id=657948607 groups=["Cow"] instance=ExtResource("1_3hlo2")]
+position = Vector2(75, 200)
+scale = Vector2(0.75, 0.75)
+script = ExtResource("5_6hef4")
 
-[sub_resource type="GDScript" id="GDScript_66fqh"]
-script/source = "extends CharacterBody2D
- 
-var speed = 10
-var pos = Vector2.ZERO
-var direction = Vector2(0.45, 0.45)
+[node name="NavigationRegion2D" type="NavigationRegion2D" parent="." unique_id=890025551]
+position = Vector2(0, 4)
+scale = Vector2(0.75, 0.75)
+navigation_polygon = SubResource("NavigationPolygon_32qfs")
 
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	print('hi, i am hungry cow!')
-	position = pos
+[node name="grass" parent="." unique_id=503455782 groups=["Grass"] instance=ExtResource("2_ggbjy")]
+position = Vector2(75, 75)
+scale = Vector2(0.5, 0.5)
+script = ExtResource("5_ftust")
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta):
-	
-	# traditional player movement
-	#var direction = Input.get_vector(\"left\", \"right\", \"up\", \"down\")
-	# velocity = direction * speed
-	#move_and_slide()
-	
-	# cow wanders across the field
-	pos += direction * speed
-	position = pos
-	
-	# cow actively searches for grass
-	
-"
+[node name="grass2" parent="." unique_id=1048890668 groups=["Grass"] instance=ExtResource("2_ggbjy")]
+position = Vector2(250, 150)
+scale = Vector2(0.5, 0.5)
+script = ExtResource("5_ftust")
 
-[node name="grass-field" type="Node2D"]
-script = ExtResource("1_yv28s")
-
-[node name="grass01" parent="." instance=ExtResource("2_ggbjy")]
-position = Vector2(548, 145)
-script = ExtResource("4_byruh")
-
-[node name="grass02" parent="." instance=ExtResource("2_ggbjy")]
-script = SubResource("GDScript_masb1")
-
-[node name="grass03" parent="." instance=ExtResource("2_ggbjy")]
-script = SubResource("GDScript_masb1")
-
-[node name="cow" parent="." instance=ExtResource("1_3hlo2")]
-position = Vector2(241, 127)
-script = SubResource("GDScript_66fqh")
-
-[connection signal="body_entered" from="grass01" to="." method="_on_grass_body_entered"]
-[connection signal="body_entered" from="grass02" to="." method="_on_grass_02_body_entered"]
-[connection signal="body_entered" from="grass03" to="." method="_on_grass_03_body_entered"]
+[node name="grass3" parent="." unique_id=1385352638 groups=["Grass"] instance=ExtResource("2_ggbjy")]
+position = Vector2(500, 75)
+scale = Vector2(0.5, 0.5)
+script = ExtResource("5_ftust")

@@ -1,15 +1,15 @@
-[gd_scene load_steps=3 format=3 uid="uid://b2nvqaoy6hlit"]
+[gd_scene format=3 uid="uid://b2nvqaoy6hlit"]
 
 [ext_resource type="Texture2D" uid="uid://ce51pke83437l" path="res://assets/cow-sprite.jpeg" id="1_3xgml"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_26m1r"]
 size = Vector2(150, 148)
 
-[node name="cow" type="CharacterBody2D"]
+[node name="cow" type="CharacterBody2D" unique_id=657948607]
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=163231050]
 scale = Vector2(0.25, 0.25)
 texture = ExtResource("1_3xgml")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1728331363]
 shape = SubResource("RectangleShape2D_26m1r")
